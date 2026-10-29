@@ -64,4 +64,4 @@ KHÔNG: Chuyển xuống xét Ưu tiên 5.
 Ưu tiên 5 - Tư thế chuẩn (±5∘\pm 5^\circ±5∘)?: 
 
 CÓ: Reset toàn bộ các Timer, tắt rung →\rightarrow→ Kết thúc chu kỳ.  
-Bước 3 - Cập nhật trạng thái: Hệ thống cập nhật trạng thái hoạt động hiện tại và chờ chu kỳ tiếp theo trong khoảng thời gian từ 10ms−20ms10\text{ms} - 20\text{ms}10ms−20ms trước khi quay trở lại đầu vòng lặp chính.  
+Bước 3 - Cập nhật trạng thái: Hệ thống cập nhật trạng thái hoạt động hiện tại và chờ chu kỳ tiếp theo trong khoảng thời gian từ 10ms đến 20ms trước khi quay trở lại đầu vòng lặp chính.  
