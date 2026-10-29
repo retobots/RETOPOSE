@@ -1,4 +1,5 @@
 PHẦN 1: KIẾN TRÚC HỆ THỐNG
+
 Hệ thống được tổ chức theo mô hình phân tầng từ trên xuống dưới:  
 
 Tầng Điều Phối (Orchestrator):  
