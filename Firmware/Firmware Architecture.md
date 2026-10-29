@@ -27,7 +27,8 @@ speaker.c (Động Loa): Điều khiển còi/loa phát cảnh báo âm thanh.
 led_indicator.c (Đèn LED): Điều khiển đèn LED hiển thị trạng thái hoạt động.  
 
 
-PHẦN 2: QUY TRÌNH HOẠT ĐỘNG 
+PHẦN 2: QUY TRÌNH HOẠT ĐỘNG
+
 Quy trình vận hành gồm giai đoạn cấu hình ban đầu và một vòng lặp tuần hoàn khép kín:  
 0. Khởi tạo (SETUP) 
 Chạy một lần duy nhất khi hệ thống được cấp nguồn/khởi động.  
