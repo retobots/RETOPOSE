@@ -6,7 +6,6 @@
 void vibrator_init();
 void vibrator_on();
 void vibrator_off();
+void vibrator_double_pulse(); // Khai báo hàm rung xác nhận
 
-void vibrator_pulse(uint32_t duration_ms);
-
-#endif
+#endif // VIBRATOR_H

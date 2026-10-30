@@ -61,3 +61,22 @@ bool imu_read_data(IMU_Data &data) {
     
     return true;
 }
+void imu_enable_wake_on_motion() {
+    // 1. Cài đặt ngưỡng lực chuyển động (Motion Threshold)
+    Wire.beginTransmission(MPU6050_ADDR);
+    Wire.write(0x1F); // Thanh ghi MOT_THR
+    Wire.write(20);   // Giá trị ngưỡng (có thể tinh chỉnh 10-40)
+    Wire.endTransmission();
+
+    // 2. Cài đặt thời gian duy trì chuyển động (Motion Duration)
+    Wire.beginTransmission(MPU6050_ADDR);
+    Wire.write(0x20); // Thanh ghi MOT_DUR
+    Wire.write(1);    // 1 mili-giây
+    Wire.endTransmission();
+
+    // 3. Kích hoạt tính năng ngắt chuyển động ra chân INT
+    Wire.beginTransmission(MPU6050_ADDR);
+    Wire.write(0x38); // Thanh ghi INT_ENABLE
+    Wire.write(0x40); // Bật bit số 6 (MOT_INT_EN)
+    Wire.endTransmission();
+}

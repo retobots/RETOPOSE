@@ -12,5 +12,7 @@ struct IMU_Data{
 
 bool imu_init();
 bool imu_read_data(IMU_Data &data);
+// Hàm cấu hình MPU6050 phát tín hiệu báo động khi có chuyển động
+void imu_enable_wake_on_motion();
 
 #endif
