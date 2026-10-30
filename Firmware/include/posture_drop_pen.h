@@ -1,19 +1,7 @@
 #ifndef POSTURE_DROP_PEN_H //ktra có  định nghĩa POSTURE_DROP_PEN_H chưa
 #define POSTURE_DROP_PEN_H //chưa thì sẽ định nghĩa POSTURE_DROP_PEN_H
 #include <stdint.h>
-class PostureDropPen {
-public:
-PostureDropPen(float angleThreshold = 45.0f, float dynamicGyroThreshold = 35.0f, uint32_t maxDurationMs = 3000);
-    void init();
-    void reset();
-    bool check(float pitchError, float gyroMagnitude, uint32_t currentTimeMs);
-    bool isDroppingActive() const;
- private:
-    float _angleThreshold;
-    float _dynamicGyroThreshold;
-    uint32_t _maxDurationMs;
-
-    bool _isActive;
-    uint32_t _startTimestamp;
-};
+#include "config.h"
+bool check_drop_pen(const IMU_Data &imu, uint32_t dt_ms);
+void drop_pen_timer_reset();
 #endif
