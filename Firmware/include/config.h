@@ -1,7 +1,7 @@
 #ifndef CONFIG_H
 #define CONFIG_H
 
-#include <Arduino.h>
+#include <stdint.h>
 
 // Giao tiếp I2C cho MPU 6050
 constexpr uint8_t PIN_I2C_SDA = 8;
