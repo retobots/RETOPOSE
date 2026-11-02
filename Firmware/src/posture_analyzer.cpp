@@ -53,7 +53,7 @@ void posture_analyzer_run() {
                 gpio_wakeup_enable((gpio_num_t)PIN_IMU_INT, GPIO_INTR_HIGH_LEVEL);
                 
                 // Kích hoạt tính năng đánh thức kép
-                esp_deep_sleep_enable_gpio_wakeup(); 
+                esp_deep_sleep_enable_gpio_wakeup(1ULL << PIN_IMU_INT, ESP_GPIO_WAKEUP_GPIO_HIGH); 
                 
                 // Ngủ sâu
                 esp_deep_sleep_start(); 

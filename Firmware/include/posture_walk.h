@@ -1,3 +1,4 @@
+#include "imu_sensor.h"
 #ifndef POSTURE_WALK_H
 #define POSTURE_WALK_H
 #include <stdint.h>

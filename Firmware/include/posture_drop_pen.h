@@ -1,3 +1,4 @@
+#include "imu_sensor.h"
 #ifndef POSTURE_DROP_PEN_H //ktra có  định nghĩa POSTURE_DROP_PEN_H chưa
 #define POSTURE_DROP_PEN_H //chưa thì sẽ định nghĩa POSTURE_DROP_PEN_H
 #include <stdint.h>
