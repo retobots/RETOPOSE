@@ -52,15 +52,29 @@ bool imu_read_data(IMU_Data &data) {
     float az = acc_z / 16384.0f;
     data.gyro_z = gyro_z_raw / 131.0f;
     
+    // ... (phần đọc raw data và tính ax, ay, az, gyro_z giữ nguyên) ...
+
     // Tính toán gia tốc tổng hợp (dùng định lý Pytago không gian)
     data.accel_total = sqrt(ax*ax + ay*ay + az*az);
     
-    // Tính toán góc nghiêng Pitch và Roll dựa trên gia tốc trọng trường
-    data.pitch = atan2(-ax, sqrt(ay*ay + az*az)) * 180.0f / PI;
-    data.roll  = atan2(ay, az) * 180.0f / PI;
+    // 1. Tính góc tạm thời từ gia tốc kế
+    float accel_pitch = atan2(-ax, sqrt(ay*ay + az*az)) * 180.0f / PI;
+    float accel_roll  = atan2(ay, az) * 180.0f / PI;
+    
+    // 2. Tính tốc độ góc từ con quay hồi chuyển
+    float gyro_pitch_rate = gyro_y / 131.0f; // Tốc độ xoay trục Y
+    float gyro_roll_rate  = gyro_x / 131.0f; // Tốc độ xoay trục X
+
+    // 3. Chu kỳ lấy mẫu (Delta time)
+    float dt = 0.01f; 
+
+    // 4. COMPLEMENTARY FILTER (Cập nhật trực tiếp vào struct data)
+    data.pitch = 0.98f * (data.pitch + gyro_pitch_rate * dt) + 0.02f * accel_pitch;
+    data.roll  = 0.98f * (data.roll  + gyro_roll_rate * dt)  + 0.02f * accel_roll;
     
     return true;
 }
+
 void imu_enable_wake_on_motion() {
     // 1. Cài đặt ngưỡng lực chuyển động (Motion Threshold)
     Wire.beginTransmission(MPU6050_ADDR);
