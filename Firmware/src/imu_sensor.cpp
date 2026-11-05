@@ -51,6 +51,8 @@ bool imu_read_data(IMU_Data &data) {
     float ay = acc_y / 16384.0f;
     float az = acc_z / 16384.0f;
     data.gyro_z = gyro_z_raw / 131.0f;
+    data.gyro_x = gyro_x / 131.0f;
+    data.gyro_y = gyro_y / 131.0f;
     
     // ... (phần đọc raw data và tính ax, ay, az, gyro_z giữ nguyên) ...
 
@@ -66,12 +68,22 @@ bool imu_read_data(IMU_Data &data) {
     float gyro_roll_rate  = gyro_x / 131.0f; // Tốc độ xoay trục X
 
     // 3. Chu kỳ lấy mẫu (Delta time)
-    float dt = 0.01f; 
+    // Thực tế vòng loop() có delay(10), cộng thêm 1-2ms tính toán, nên dt = 0.012f sẽ chính xác hơn
+    float dt = 0.012f; 
 
-    // 4. COMPLEMENTARY FILTER (Cập nhật trực tiếp vào struct data)
-    data.pitch = 0.98f * (data.pitch + gyro_pitch_rate * dt) + 0.02f * accel_pitch;
-    data.roll  = 0.98f * (data.roll  + gyro_roll_rate * dt)  + 0.02f * accel_roll;
+    // === ĐÃ SỬA LỖI Ở ĐÂY: Sử dụng biến static để ghi nhớ góc cũ ===
+    static float current_pitch = 0.0f;
+    static float current_roll = 0.0f;
+
+    // 4. COMPLEMENTARY FILTER (Tính toán trên biến static)
+    current_pitch = 0.98f * (current_pitch + gyro_pitch_rate * dt) + 0.02f * accel_pitch;
+    current_roll  = 0.98f * (current_roll  + gyro_roll_rate * dt)  + 0.02f * accel_roll;
     
+    // 5. Gán kết quả cuối cùng ra ngoài struct
+    data.pitch = current_pitch;
+    data.roll = current_roll;
+    // ===============================================================
+
     return true;
 }
 

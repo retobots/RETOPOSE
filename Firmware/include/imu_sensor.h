@@ -5,8 +5,10 @@
 
 struct IMU_Data{
     float pitch = 0.0f; //nghieng truoc sau 
-    float roll = 0.0f; //nghieng trai phai
-    float gyro_z = 0.0f; //vtoc goc
+    float roll = 0.0f;//nghieng trai phai
+    float gyro_x = 0.0f; // TỐC ĐỘ GÓC TRỤC X (THÊM DÒNG NÀY)(cúi gập người)
+    float gyro_z = 0.0f; //vtoc goc (nghiêng người)
+    float gyro_y = 0.0f; // TỐC ĐỘ GÓC TRỤC Y (xoay mình)
     float accel_total = 0.0f;
 };
 

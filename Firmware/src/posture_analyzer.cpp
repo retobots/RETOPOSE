@@ -52,8 +52,9 @@ void posture_analyzer_run() {
                 pinMode(PIN_IMU_INT, INPUT_PULLDOWN); 
                 gpio_wakeup_enable((gpio_num_t)PIN_IMU_INT, GPIO_INTR_HIGH_LEVEL);
                 
-                // Kích hoạt tính năng đánh thức kép
-                esp_deep_sleep_enable_gpio_wakeup(1ULL << PIN_IMU_INT, ESP_GPIO_WAKEUP_GPIO_HIGH); 
+                // === ĐÃ SỬA: Kích hoạt tổng chức năng đánh thức qua GPIO cho ESP32-C3 ===
+                esp_deep_sleep_enable_gpio_wakeup(1ULL << PIN_IMU_INT, ESP_GPIO_WAKEUP_GPIO_HIGH);
+                // =======================================================================
                 
                 // Ngủ sâu
                 esp_deep_sleep_start(); 
@@ -72,6 +73,12 @@ void posture_analyzer_run() {
 
         // --- 3. TÍNH GÓC TƯƠNG ĐỐI VÀ GỌI CHUỖI LOGIC TƯ THẾ ---
         imu.pitch = imu.pitch - reference_pitch;
+        Serial.print("Pitch(rel): ");
+        Serial.print(imu.pitch);
+        Serial.print(" | Roll: ");
+        Serial.print(imu.roll);
+        Serial.print(" | Ref: ");
+        Serial.println(reference_pitch);
         
         if (check_walk(imu)) {
             vibrator_off();

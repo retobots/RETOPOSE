@@ -10,7 +10,7 @@ bool check_drop_pen(const IMU_Data &imu, uint32_t dt_ms) {
         drop_pen_timer_ms += dt_ms;
         
         // Ghi nhận ngay nếu có khoảnh khắc gập người cực nhanh (FR-05)
-        if (abs(imu.gyro_z) >= GYRO_DYNAMIC_THRESHOLD) {
+        if (abs(imu.gyro_x) >= GYRO_DYNAMIC_THRESHOLD) {
             is_dynamic_movement = true;
         }
         

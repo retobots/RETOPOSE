@@ -4,21 +4,25 @@
 
 static uint32_t slouch_timer_ms = 0;
 
-bool check_slouch(const IMU_Data &imu, uint32_t dt_ms) {
-    if (imu.pitch >= ANGLE_SLOUCH_THRESHOLD) {
+bool check_slouch(const IMU_Data& data, uint32_t dt_ms) {
+    // 1. Kiểm tra góc gù lưng dựa vào biến config
+    if (data.pitch > ANGLE_SLOUCH_THRESHOLD) {
         
-        // Dùng fabsf() dành riêng cho kiểu float
-        if (fabsf(imu.gyro_z) < GYRO_DYNAMIC_THRESHOLD) {
-            slouch_timer_ms += dt_ms; 
+        // 2. Chống báo động giả: So sánh với ngưỡng động (Dynamic Threshold)
+        if (abs(data.gyro_x) > GYRO_DYNAMIC_THRESHOLD) {
+            return false;
         }
 
+        slouch_timer_ms += dt_ms;
+        
+        // 3. Nếu gù lưng liên tục quá thời gian quy định (5000ms)
         if (slouch_timer_ms >= TIME_SLOUCH_MS) {
-            return true;
+            return true; // Kích hoạt rung
         }
     } else {
-        slouch_timer_reset();
+        // NGƯỜI DÙNG ĐÃ NGỒI THẲNG LẠI (Hoặc nhỏ hơn ngưỡng gù)
+        slouch_timer_ms = 0; 
     }
-    
     return false;
 }
 
