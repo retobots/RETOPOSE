@@ -50,9 +50,9 @@ Hệ thống thiết bị đeo nhắc nhở điều chỉnh tư thế ngồi h�
 
 ### **4.1. Khởi động và Hiệu chuẩn tư thế chuẩn (Calibration)**
 
-* **FR-01 (Hiệu chuẩn điểm 0):** Thiết bị phải có nút nhấn vật lý hoặc thao tác chạm để ghi nhận "Tư thế ngồi thẳng chuẩn" của người dùng khi bắt đầu phiên học.  
+* **FR-01 (Hiệu chuẩn điểm 0):** Khi bắt đầu phiên học, người dùng vào web bấm nút Bắt đầu, Thiết bị tự động nhận diện "Tư thế ngồi thẳng chuẩn" của người dùng khi bắt đầu phiên học.  
 * **FR-02 (Lưu thông số tạm thời):** Góc pitch (nghiêng trước/sau) và roll (nghiêng trái/phải) tại thời điểm hiệu chuẩn được đặt làm mốc tham chiếu (${0}^{\circ },{0}^{\circ }$).  
-* **FR-03 (Phản hồi xác nhận):** Thiết bị phát 2 nhịp rung ngắn để báo hiệu quá trình hiệu chuẩn thành công.
+* **FR-03 (Phản hồi xác nhận):** Thiết bị phát 2 nhịp rung ngắn để báo hiệu quá trình hiệu chuẩn thành công. Web hiện "Đã ghi nhận tư thế ngồi thẳng chuẩn"
 
 ### **4.2. Cơ chế lọc chống cảnh báo giả (Anti-False-Positive Engine)**
 
