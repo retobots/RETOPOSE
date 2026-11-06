@@ -4,15 +4,15 @@
 
 void led_init() {
     pinMode(PIN_LED, OUTPUT);
-    digitalWrite(PIN_LED, LOW); // Tắt LED khi khởi động
+    digitalWrite(PIN_LED, HIGH); // Tắt LED khi khởi động
 }
 
 void led_on() {
-    digitalWrite(PIN_LED, HIGH);
+    digitalWrite(PIN_LED, LOW);
 }
 
 void led_off() {
-    digitalWrite(PIN_LED, LOW);
+    digitalWrite(PIN_LED, HIGH);
 }
 
 void led_toggle() {
