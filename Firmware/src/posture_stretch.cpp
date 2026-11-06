@@ -4,9 +4,9 @@
 // Biến nội bộ đếm thời gian vươn vai
 static uint32_t stretch_timer_ms = 0;
 
-bool check_stretch(const IMU_Data &imu, uint32_t dt_ms) {
+bool check_stretch(float m_delta_pitch, const IMU_Data &imu, uint32_t dt_ms) {
     // Vươn vai là ngả lưng về sau (pitch âm) vượt quá ngưỡng -10 độ
-    if (imu.pitch <= ANGLE_STRETCH_THRESHOLD) {
+    if (m_delta_pitch <= ANGLE_STRETCH_THRESHOLD) {
         stretch_timer_ms += dt_ms;
         
         // Trả về true nếu đang vươn vai thư giãn hợp lệ (chưa vượt quá giới hạn 60 giây)

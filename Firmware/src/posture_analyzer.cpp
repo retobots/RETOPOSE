@@ -10,6 +10,7 @@
 #include "posture_walk.h"
 #include <esp_sleep.h> 
 #include <driver/gpio.h> 
+#include <led.h>
 
 static uint32_t last_time_ms = 0;
 static float reference_pitch = 0.0f;
@@ -17,12 +18,28 @@ static bool last_button_state = false;
 
 // Biến nội bộ đếm thời gian thiết bị nằm im
 static uint32_t idle_timer_ms = 0; 
+IMU_Data imu; // Biến toàn cục lưu dữ liệu IMU hiện tại
 
 void posture_analyzer_init() {
     imu_init();
     vibrator_init();
-    button_init();
+    // button_init();
+    led_init();
     last_time_ms = millis();
+    // Lấy góc chuẩn ban đầu khi khởi động mạch
+    bool imu_data_ready = false;
+    unsigned long start_time = millis();
+    while (!imu_data_ready) {
+        imu_read_data(imu);
+        delay(10);
+        if (millis() - start_time > 5000) { // Timeout sau 5 giây
+            imu_data_ready = true; // Thoát vòng lặp nếu không nhận được dữ liệu
+        }
+    }
+    reference_pitch = imu.pitch; 
+    vibrator_double_pulse(); 
+    Serial.printf("Reference Pitch set to: %.2f\n", reference_pitch);
+
 }
 
 void posture_analyzer_run() {
@@ -30,7 +47,6 @@ void posture_analyzer_run() {
     uint32_t dt_ms = current_time_ms - last_time_ms;
     last_time_ms = current_time_ms;
 
-    IMU_Data imu;
     if (imu_read_data(imu)) {
         
         // --- 1. FR-09 & FR-10: KIỂM TRA NẰM IM ĐỂ NGỦ SÂU & ĐÁNH THỨC KÉP ---
@@ -40,6 +56,7 @@ void posture_analyzer_run() {
             idle_timer_ms += dt_ms;
             
             if (idle_timer_ms >= TIME_IDLE_DEEP_SLEEP_MS) {
+
                 vibrator_on(); delay(500); vibrator_off(); 
                 
                 // Lên đạn cho cảm biến MPU canh gác
@@ -63,37 +80,43 @@ void posture_analyzer_run() {
             idle_timer_ms = 0; 
         }
 
-        // --- 2. FR-03: XỬ LÝ NÚT NHẤN LẤY ĐIỂM CHUẨN ---
-        bool current_button_state = is_button_pressed();
-        if (current_button_state == true && last_button_state == false) {
-            reference_pitch = imu.pitch; 
-            vibrator_double_pulse();     
-        }
-        last_button_state = current_button_state; 
+        // // --- 2. FR-03: XỬ LÝ NÚT NHẤN LẤY ĐIỂM CHUẨN ---
+        // bool current_button_state = is_button_pressed();
+        // if (current_button_state == true && last_button_state == false) {
+        //     reference_pitch = imu.pitch; 
+        //     vibrator_double_pulse();     
+        // }
+        // last_button_state = current_button_state; 
 
         // --- 3. TÍNH GÓC TƯƠNG ĐỐI VÀ GỌI CHUỖI LOGIC TƯ THẾ ---
-        imu.pitch = imu.pitch - reference_pitch;
-        Serial.print("Pitch(rel): ");
-        Serial.print(imu.pitch);
-        Serial.print(" | Roll: ");
-        Serial.print(imu.roll);
-        Serial.print(" | Ref: ");
-        Serial.println(reference_pitch);
+      float delta_pitch = imu.pitch - reference_pitch;
+        Serial.printf("Current Pitch: %.2f, Reference Pitch: %.2f, Delta Pitch: %.2f, Accel Total: %.2f, Gyro X: %.2f, Gyro Z: %.2f\n", imu.pitch, reference_pitch, delta_pitch, imu.accel_total, imu.gyro_x, imu.gyro_z);
         
         if (check_walk(imu)) {
+            Serial.println("Walking detected");
             vibrator_off();
         }
-        else if (check_drop_pen(imu, dt_ms)) {
+        else if (check_drop_pen(delta_pitch, imu, dt_ms)) {
+            Serial.println("Drop pen detected");
             vibrator_off();
         }
-        else if (check_slouch(imu, dt_ms)) {
+        else if (check_slouch(delta_pitch, imu, dt_ms)) {
+            Serial.println("Slouching detected");
             vibrator_on();
+            led_on(); // Bật LED khi phát hiện tư thế gù
         } 
-        else if (check_stretch(imu, dt_ms)) {
+        else if (check_stretch(delta_pitch, imu, dt_ms)) {
+            Serial.println("Stretching detected");
             vibrator_off();
         }
-        else if (check_normal(imu)) {
+        else if (check_normal(delta_pitch, imu)) {
+            Serial.println("Normal posture detected");
             vibrator_off();
+        }
+        else {
+            Serial.println("Unknown posture detected");
+
+ 
         }
     }
 }

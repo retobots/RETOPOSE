@@ -3,6 +3,6 @@
 #define POSTURE_NORMAL_H
 #include <stdint.h>
 #include "config.h"
-bool check_normal(const IMU_Data &imu);
+bool check_normal(float m_delta_pitch, const IMU_Data &imu);
 
 #endif

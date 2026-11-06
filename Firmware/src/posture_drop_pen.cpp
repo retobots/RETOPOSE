@@ -5,8 +5,8 @@
 static uint32_t drop_pen_timer_ms = 0;
 static bool is_dynamic_movement = false; // Cờ ghi nhận có chuyển động nhanh
 
-bool check_drop_pen(const IMU_Data &imu, uint32_t dt_ms) {
-    if (imu.pitch >= ANGLE_DROPPEN_THRESHOLD) {
+bool check_drop_pen(float m_delta_pitch, const IMU_Data &imu, uint32_t dt_ms) {
+    if (m_delta_pitch >= ANGLE_DROPPEN_THRESHOLD) {
         drop_pen_timer_ms += dt_ms;
         
         // Ghi nhận ngay nếu có khoảnh khắc gập người cực nhanh (FR-05)

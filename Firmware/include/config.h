@@ -27,7 +27,7 @@ constexpr uint32_t TIME_DROP_PEN_MAX_MS = 3000;
 constexpr uint32_t TIME_STRETCH_MAX_MS  = 60000;
 
 // Ngưỡng con quay hồi chuyển phân biệt Động/Tĩnh (Độ/giây)
-constexpr float GYRO_DYNAMIC_THRESHOLD = 35.0f;
+constexpr float GYRO_DYNAMIC_THRESHOLD = 50.0f;
 
 // Thông số cho chế độ ngủ sâu (Deep Sleep)
 constexpr float ACCEL_STATIC_THRESHOLD = 0.15f; 

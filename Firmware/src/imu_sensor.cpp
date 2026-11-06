@@ -56,33 +56,41 @@ bool imu_read_data(IMU_Data &data) {
     
     // ... (phần đọc raw data và tính ax, ay, az, gyro_z giữ nguyên) ...
 
-    // Tính toán gia tốc tổng hợp (dùng định lý Pytago không gian)
+// Tính toán gia tốc tổng hợp (dùng định lý Pytago không gian)
     data.accel_total = sqrt(ax*ax + ay*ay + az*az);
     
-    // 1. Tính góc tạm thời từ gia tốc kế
-    float accel_pitch = atan2(-ax, sqrt(ay*ay + az*az)) * 180.0f / PI;
-    float accel_roll  = atan2(ay, az) * 180.0f / PI;
+    // 1. HIỆU CHỈNH TRỤC THEO THỰC TẾ: Y hướng lên đầu, Z đâm vào lưng
+    // Góc cúi gập người (xoay quanh trục X): Dùng gia tốc trục Y và Z
+    // Cúi về trước -> Z cắm xuống đất, Y nằm ngang -> Sinh ra góc Dương
+    float accel_pitch = atan2(-az, sqrt(ax*ax + ay*ay)) * 180.0f / PI; 
     
-    // 2. Tính tốc độ góc từ con quay hồi chuyển
-    float gyro_pitch_rate = gyro_y / 131.0f; // Tốc độ xoay trục Y
-    float gyro_roll_rate  = gyro_x / 131.0f; // Tốc độ xoay trục X
+    // Góc nghiêng lườn trái/phải (xoay quanh trục Z): Dùng gia tốc trục X và Y
+    float accel_roll  = atan2(ax, ay) * 180.0f / PI; 
+    
+    // 2. Tốc độ góc từ con quay hồi chuyển (Đã map đúng trục)
+    float gyro_pitch_rate = data.gyro_x; // Cúi/ngửa là xoay quanh trục X
+    float gyro_roll_rate  = data.gyro_z; // Nghiêng lườn là xoay quanh trục Z
 
-    // 3. Chu kỳ lấy mẫu (Delta time)
-    // Thực tế vòng loop() có delay(10), cộng thêm 1-2ms tính toán, nên dt = 0.012f sẽ chính xác hơn
-    float dt = 0.012f; 
+    // 3. Chu kỳ lấy mẫu (Delta time thực tế)
+    static uint32_t last_time_micros = 0;
+    uint32_t current_time_micros = micros();
+    float dt = (current_time_micros - last_time_micros) / 1000000.0f; 
+    last_time_micros = current_time_micros;
 
-    // === ĐÃ SỬA LỖI Ở ĐÂY: Sử dụng biến static để ghi nhớ góc cũ ===
+    // === Ghi nhớ góc cũ ===
     static float current_pitch = 0.0f;
     static float current_roll = 0.0f;
 
-    // 4. COMPLEMENTARY FILTER (Tính toán trên biến static)
-    current_pitch = 0.98f * (current_pitch + gyro_pitch_rate * dt) + 0.02f * accel_pitch;
-    current_roll  = 0.98f * (current_roll  + gyro_roll_rate * dt)  + 0.02f * accel_roll;
+    // 4. COMPLEMENTARY FILTER
+    // (Lọc nhiễu khi thiết bị vừa khởi động và dt chưa ổn định)
+    if (dt > 0.0f && dt < 1.0f) {
+        current_pitch = 0.98f * (current_pitch + gyro_pitch_rate * dt) + 0.02f * accel_pitch;
+        current_roll  = 0.98f * (current_roll  + gyro_roll_rate * dt)  + 0.02f * accel_roll;
+    }
     
     // 5. Gán kết quả cuối cùng ra ngoài struct
     data.pitch = current_pitch;
     data.roll = current_roll;
-    // ===============================================================
 
     return true;
 }
