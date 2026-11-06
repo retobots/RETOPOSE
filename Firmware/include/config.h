@@ -16,7 +16,7 @@ constexpr uint8_t PIN_BUTTON_RESET = 4; // Đã sửa đúng tên biến dùng t
 
 // Góc nghiêng cho các tình huống (Bắt buộc dùng float)
 constexpr float ANGLE_NORMAL_THRESHOLD  = 5.0f;
-constexpr float ANGLE_SLOUCH_THRESHOLD  = 15.0f;
+constexpr float ANGLE_SLOUCH_THRESHOLD  = 10.0f;
 constexpr float ANGLE_STRETCH_THRESHOLD = -10.0f;
 constexpr float ANGLE_DROPPEN_THRESHOLD = 45.0f;
 
